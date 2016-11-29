@@ -42,6 +42,7 @@ function addToCart(pizza, size) {
     var count=0;
     //Приклад реалізації, можна робити будь-яким іншим способом
     if(Cart.length===0){
+        
         countPizza+=1;
         Cart.push({
             pizza: pizza,
@@ -112,6 +113,12 @@ function updateCart() {
     //Очищаємо старі піци в кошику
     $cart.html("");
     totalSum = 0;
+    if(countPizza > 0){
+        $(".start-label").attr("style", "display:none");
+    }
+    if(countPizza === 0){
+        $(".start-label").removeAttr("style");
+    }
     //Онволення однієї піци
     function showOnePizzaInCart(cart_item) {
         var html_code = Templates.PizzaCart_OneItem(cart_item);
