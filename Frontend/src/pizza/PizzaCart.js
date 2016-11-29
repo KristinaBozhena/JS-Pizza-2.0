@@ -30,7 +30,6 @@ var totalSum;
 
 function addToCart(pizza, size) {
     //Додавання однієї піци в кошик покупок
-    var find = false;
     var price = 0;
     
     if(size===PizzaSize.Big){
@@ -39,17 +38,10 @@ function addToCart(pizza, size) {
     if(size===PizzaSize.Small){
         price = pizza.small_size.price;        
     }
-   
-    Cart.forEach(function (pizzas) {
-        if(pizzas.pizza.title == pizza.title & pizzas.size == size){
-            pizzas.quantity+=1;
-            find = true;
-            return;
-        }
-    });
-
+    
+    var count=0;
     //Приклад реалізації, можна робити будь-яким іншим способом
-    if(!find){
+    if(Cart.length===0){
         countPizza+=1;
         Cart.push({
             pizza: pizza,
@@ -58,7 +50,27 @@ function addToCart(pizza, size) {
             quantity: 1
         });
     }
-   
+    
+    else{
+        Cart.forEach(function (exist_pizza) {
+            if(exist_pizza.pizza.id == pizza.id && exist_pizza.size == size){
+                exist_pizza.quantity+=1;
+                return;
+            }
+
+            if(count == (Cart.length-1)){
+                countPizza+=1;
+                Cart.push({
+                    pizza: pizza,
+                    size: size,
+                    price: price,
+                    quantity: 1
+                });
+                return;
+            }
+            count+=1;
+        });
+    }   
     //Оновити вміст кошика на сторінці
     updateCart();
 }

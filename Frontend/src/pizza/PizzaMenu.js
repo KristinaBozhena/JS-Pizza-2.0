@@ -8,19 +8,20 @@ var Pizza_List = require('../Pizza_List');
 //HTML едемент куди будуть додаватися піци
 var $pizza_list = $("#pizza_list");
 
+var filter_pizza;
 
-filter = {
+filters = {
     meat: 0,
     pineapple: 1,
     mushroom: 2,
     ocean: 3,
-    wthoutmeat: 4
+    withotmeat: 4
 };
 
 function showPizzaList(list) {
     //Очищаємо старі піци в кошику
     $pizza_list.html("");
-
+    
     //Онволення однієї піци
     function showOnePizza(pizza) {
         var html_code = Templates.PizzaMenu_OneItem({pizza: pizza});
@@ -28,11 +29,9 @@ function showPizzaList(list) {
         var $node = $(html_code);
 
         $node.find(".buy-big").click(function(){
-            console.log(pizza);
             PizzaCart.addToCart(pizza, PizzaCart.PizzaSize.Big);
         });
         $node.find(".buy-small").click(function(){
-            console.log(pizza);
             PizzaCart.addToCart(pizza, PizzaCart.PizzaSize.Small);
         });
 
@@ -45,28 +44,97 @@ function showPizzaList(list) {
 function filterPizza(filter) {
     //Масив куди потраплять піци які треба показати
     var pizza_shown = [];
-
-    Pizza_List.forEach(function(pizza){
-        //Якщо піца відповідає фільтру
-        if(pizza.content.filter){
-            pizza_shown.push(pizza);
-        }
-
-        //TODO: зробити фільтри
-    });
-
+    //Якщо піца відповідає фільтру
+    if(filter==0){
+        Pizza_List.forEach(function(pizza){
+                if(pizza.content.meat){
+                pizza_shown.push(pizza);
+                }
+        });
+    }
+    if(filter==1){
+        Pizza_List.forEach(function(pizza){
+                if(pizza.content.pineapple){
+                pizza_shown.push(pizza);
+                }
+        });
+        
+    }
+    if(filter==2){
+        Pizza_List.forEach(function(pizza){
+                if(pizza.content.mushroom){
+                pizza_shown.push(pizza);
+                }
+        });
+    }
+    if(filter==3){
+        Pizza_List.forEach(function(pizza){
+                if(pizza.content.ocean){
+                pizza_shown.push(pizza);
+                }
+        });
+    }
+    if(filter==4){
+        Pizza_List.forEach(function(pizza){
+            if(pizza.content.meat || pizza.content.ocean){
+            }
+            else{
+                pizza_shown.push(pizza);
+            }
+        });
+    }
     //Показати відфільтровані піци
+     $(".count-all-pizza").html(pizza_shown.length);
     showPizzaList(pizza_shown);
 }
 
 function filter(pizza_list) {
+     $("#all-pizza").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#all-pizza").addClass("active");
+        showPizzaList(Pizza_List);
+        console.log("len", Pizza_List.length);
+        $(".count-all-pizza").html(Pizza_List.length);
+    });
+    
+    $("#meat").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#meat").addClass("active");
+        //filter_pizza = "meat";
+        filterPizza(filters.meat);
+    });
+    
+    $("#pineapple").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#pineapple").addClass("active");
+        filterPizza(filters.pineapple);
+    });
 
+    $("#mushroom").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#mushroom").addClass("active");
+        filterPizza(filters.mushroom);
+    });
+    
+    $("#ocean").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#ocean").addClass("active");
+        filterPizza(filters.ocean);
+    });
+    
+    $("#withotmeat").click(function(){
+        $(".pizza-filter").removeClass("active");
+        $("#withotmeat").addClass("active");
+        filterPizza(filters.withotmeat);
+    });
 }
 
 function initialiseMenu() {
     //Показуємо усі піци
+    $("#all-pizza").addClass("active");
+    $(".count-all-pizza").html(Pizza_List.length);
     showPizzaList(Pizza_List);
-    
+    filter(Pizza_List);
 }
 
 exports.filterPizza = filterPizza;
